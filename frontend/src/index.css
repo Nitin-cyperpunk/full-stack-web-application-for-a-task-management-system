@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Page backdrop — soft, slightly uneven feel (not flat AI gray) */
 body {
   margin: 0;
-  @apply min-h-screen bg-slate-50 text-slate-900 antialiased;
+  @apply min-h-screen text-stone-900 antialiased;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(125, 211, 252, 0.14), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(214, 211, 209, 0.45), transparent 50%),
+    linear-gradient(165deg, #f8fafc 0%, #f1f5f9 45%, #e7e5e4 100%);
 }
 
 #root {

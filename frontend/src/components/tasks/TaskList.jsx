@@ -6,17 +6,17 @@ export function TaskList({ tasks, onDelete, deletingId }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-stone-200/80 bg-white/80 shadow-sm backdrop-blur-[2px]">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="bg-slate-100 text-xs font-semibold uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-stone-200/90 bg-stone-100/50 text-[11px] font-semibold uppercase tracking-wider text-stone-500">
             <tr>
               <th className="px-3 py-3">Title</th>
               <th className="hidden px-3 py-3 md:table-cell">Status</th>
               <th className="hidden px-3 py-3 sm:table-cell">Priority</th>
               <th className="hidden px-3 py-3 lg:table-cell">Due</th>
               <th className="hidden px-3 py-3 xl:table-cell">Assigned</th>
-              <th className="px-3 py-3 text-right">Actions</th>
+              <th className="px-3 py-3 text-right"> </th>
             </tr>
           </thead>
           <tbody>

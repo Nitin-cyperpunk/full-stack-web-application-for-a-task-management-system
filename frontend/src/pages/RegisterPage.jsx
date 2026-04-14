@@ -39,12 +39,12 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
-        <h1 className="text-center text-2xl font-semibold text-slate-900">Create account</h1>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-800">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-14">
+      <div className="w-full max-w-md rounded-2xl border border-white/55 bg-white/65 p-8 shadow-glass-lg backdrop-blur-xl backdrop-saturate-150">
+        <h1 className="font-display text-center text-2xl font-semibold text-stone-900">Create account</h1>
+        <p className="mt-2 text-center text-sm text-stone-600">
+          Already registered?{' '}
+          <Link to="/login" className="font-medium text-sky-900 underline decoration-sky-300/80 underline-offset-2 hover:text-stone-900">
             Sign in
           </Link>
         </p>
@@ -67,7 +67,7 @@ export function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <p className="text-xs text-slate-500">Minimum 6 characters.</p>
+          <p className="text-xs text-stone-500">At least six characters — boring, but it works.</p>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <>

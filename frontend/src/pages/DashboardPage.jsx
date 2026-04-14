@@ -50,13 +50,15 @@ export function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-8 flex flex-col gap-5 border-b border-stone-200/60 pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Tasks</h1>
-          <p className="text-sm text-slate-600">Filter, sort, and manage your work.</p>
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-stone-900">Your tasks</h1>
+          <p className="mt-1.5 max-w-md text-[15px] leading-relaxed text-stone-600">
+            Narrow things down with filters — nothing fancy, just what you need today.
+          </p>
         </div>
-        <Link to="/tasks/new">
-          <Button>New task</Button>
+        <Link to="/tasks/new" className="shrink-0">
+          <Button className="w-full sm:w-auto">Add a task</Button>
         </Link>
       </div>
 
@@ -74,17 +76,17 @@ export function DashboardPage() {
 
       {loading && (
         <div className="flex justify-center py-16">
-          <Spinner className="h-10 w-10 text-indigo-600" />
+          <Spinner className="h-9 w-9 text-stone-700" />
         </div>
       )}
 
       {!loading && !error && tasks.length === 0 && (
         <EmptyState
-          title="No tasks yet"
-          description="Create your first task to get started."
+          title="Nothing here yet"
+          description="Start with one small task — you can always edit it later."
           action={
             <Link to="/tasks/new">
-              <Button>Create task</Button>
+              <Button>Write a task</Button>
             </Link>
           }
         />
@@ -93,9 +95,9 @@ export function DashboardPage() {
       {!loading && tasks.length > 0 && (
         <>
           <TaskList tasks={tasks} onDelete={handleDelete} deletingId={deletingId} />
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-4 text-sm text-slate-600">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-stone-200/60 pt-6 text-sm text-stone-600">
             <span>
-              Page {page} of {totalPages} · {total} task(s)
+              Page {page} of {totalPages} · {total} total
             </span>
             <div className="flex gap-2">
               <Button
@@ -104,7 +106,7 @@ export function DashboardPage() {
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                Previous
+                ← Prev
               </Button>
               <Button
                 type="button"
@@ -112,7 +114,7 @@ export function DashboardPage() {
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
               >
-                Next
+                Next →
               </Button>
             </div>
           </div>

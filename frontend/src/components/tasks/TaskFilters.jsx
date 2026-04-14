@@ -2,14 +2,14 @@ import { Select } from '../ui/Select';
 
 export function TaskFilters({ filters, onChange }) {
   return (
-    <div className="mb-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:flex-wrap md:items-end">
+    <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-stone-200/70 bg-white/70 p-4 shadow-sm backdrop-blur-sm sm:flex-row sm:flex-wrap sm:items-end">
       <Select
         label="Status"
         value={filters.status}
         onChange={(e) => onChange({ status: e.target.value })}
         className="min-w-[140px]"
       >
-        <option value="">All</option>
+        <option value="">Everything</option>
         <option value="todo">To do</option>
         <option value="in_progress">In progress</option>
         <option value="done">Done</option>
@@ -20,7 +20,7 @@ export function TaskFilters({ filters, onChange }) {
         onChange={(e) => onChange({ priority: e.target.value })}
         className="min-w-[140px]"
       >
-        <option value="">All</option>
+        <option value="">Any</option>
         <option value="low">Low</option>
         <option value="medium">Medium</option>
         <option value="high">High</option>
@@ -43,8 +43,8 @@ export function TaskFilters({ filters, onChange }) {
         onChange={(e) => onChange({ order: e.target.value })}
         className="min-w-[120px]"
       >
-        <option value="asc">Ascending</option>
-        <option value="desc">Descending</option>
+        <option value="asc">Up</option>
+        <option value="desc">Down</option>
       </Select>
     </div>
   );

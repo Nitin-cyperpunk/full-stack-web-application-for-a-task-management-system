@@ -34,9 +34,12 @@ export function TaskEditorPage() {
   const [newFiles, setNewFiles] = useState([]);
   const [readOnlyAssigneeEmail, setReadOnlyAssigneeEmail] = useState(null);
 
+  const isAdmin = user?.role === 'admin';
+  const canPickAssignee = isAdmin && assignees.length > 0;
+
   useEffect(() => {
     let cancelled = false;
-    if (user?.role === 'admin') {
+    if (isAdmin) {
       usersApi
         .listUsers()
         .then((list) => {
@@ -51,7 +54,7 @@ export function TaskEditorPage() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [isAdmin]);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -68,11 +71,12 @@ export function TaskEditorPage() {
         setDueLocal(toDatetimeLocalValue(task.dueDate));
         setExistingAttachments(Array.isArray(task.attachments) ? task.attachments : []);
         if (task.assignedTo) {
-          const aid = typeof task.assignedTo === 'object' && task.assignedTo._id
-            ? task.assignedTo._id
-            : task.assignedTo;
+          const aid =
+            typeof task.assignedTo === 'object' && task.assignedTo._id
+              ? task.assignedTo._id
+              : task.assignedTo;
           setAssignedToId(aid ? String(aid) : '');
-          if (user?.role !== 'admin' && task.assignedTo.email) {
+          if (!isAdmin && task.assignedTo.email) {
             setReadOnlyAssigneeEmail(task.assignedTo.email);
           }
         } else {
@@ -89,7 +93,7 @@ export function TaskEditorPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, isEdit, getTask, user]);
+  }, [id, isEdit, getTask, isAdmin]);
 
   function buildJsonBody() {
     const body = {
@@ -99,7 +103,7 @@ export function TaskEditorPage() {
       priority,
       dueDate: fromDatetimeLocalValue(dueLocal) || null,
     };
-    if (user?.role === 'admin') {
+    if (isAdmin) {
       body.assignedTo = assignedToId || null;
     }
     return body;
@@ -112,7 +116,7 @@ export function TaskEditorPage() {
     fd.append('priority', priority);
     const due = fromDatetimeLocalValue(dueLocal);
     fd.append('dueDate', due || '');
-    if (user?.role === 'admin') {
+    if (isAdmin) {
       fd.append('assignedTo', assignedToId || '');
     }
   }
@@ -167,83 +171,122 @@ export function TaskEditorPage() {
   if (loadingTask) {
     return (
       <div className="flex justify-center py-24">
-        <Spinner className="h-10 w-10 text-indigo-600" />
+        <Spinner className="h-9 w-9 text-stone-700" />
       </div>
     );
   }
 
+  const textareaClass =
+    'w-full rounded-lg border border-stone-300/90 px-3 py-2.5 text-stone-900 shadow-sm transition placeholder:text-stone-400 focus:border-sky-600/60 focus:outline-none focus:ring-2 focus:ring-sky-500/25';
+
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6">
-        <Link to="/" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
-          ← Back to dashboard
+      <div className="mb-8">
+        <Link
+          to="/"
+          className="inline-block text-sm font-medium text-stone-600 underline decoration-stone-300 underline-offset-4 hover:text-stone-900"
+        >
+          ← Back to list
         </Link>
-        <h1 className="mt-4 text-2xl font-bold text-slate-900">{isEdit ? 'Edit task' : 'New task'}</h1>
+        <h1 className="font-display mt-4 text-3xl font-semibold tracking-tight text-stone-900">
+          {isEdit ? 'Edit task' : 'New task'}
+        </h1>
+        <p className="mt-1.5 text-[15px] text-stone-600">
+          {isEdit ? 'Tweak details below — saves are immediate when you hit save.' : 'Add the basics; you can refine later.'}
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-8 rounded-2xl border border-stone-200/80 bg-white/85 p-6 shadow-sm backdrop-blur-sm sm:p-8"
+      >
         {error && <Alert>{error}</Alert>}
 
-        <Input label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        <div className="space-y-5">
+          <Input label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
 
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-slate-700">Description</span>
-          <textarea
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            rows={4}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-medium text-stone-700">Description</span>
+            <textarea
+              className={textareaClass}
+              rows={4}
+              placeholder="Context, links, whatever helps the next person…"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </label>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Select label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="todo">To do</option>
+              <option value="in_progress">In progress</option>
+              <option value="done">Done</option>
+            </Select>
+            <Select label="Priority" value={priority} onChange={(e) => setPriority(e.target.value)}>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </Select>
+          </div>
+
+          <Input
+            label="Due date"
+            type="datetime-local"
+            value={dueLocal}
+            onChange={(e) => setDueLocal(e.target.value)}
           />
-        </label>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Select label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="todo">To do</option>
-            <option value="in_progress">In progress</option>
-            <option value="done">Done</option>
-          </Select>
-          <Select label="Priority" value={priority} onChange={(e) => setPriority(e.target.value)}>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </Select>
         </div>
 
-        <Input
-          label="Due date"
-          type="datetime-local"
-          value={dueLocal}
-          onChange={(e) => setDueLocal(e.target.value)}
-        />
-
-        {user?.role === 'admin' && assignees.length > 0 && (
-          <Select
-            label="Assign to"
-            value={assignedToId}
-            onChange={(e) => setAssignedToId(e.target.value)}
-          >
-            <option value="">Unassigned</option>
-            {assignees.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.email}
-              </option>
-            ))}
-          </Select>
-        )}
-
-        {user?.role !== 'admin' && isEdit && readOnlyAssigneeEmail && (
-          <p className="text-sm text-slate-600">
-            <span className="font-medium text-slate-700">Assigned to: </span>
-            {readOnlyAssigneeEmail}
-            <span className="mt-1 block text-xs text-slate-500">
-              Only admins can change assignee (user list requires admin access).
-            </span>
+        {/* Assignment — always visible so people know the option exists */}
+        <section className="rounded-xl border border-amber-200/50 bg-gradient-to-b from-amber-50/40 to-stone-50/30 p-5">
+          <h2 className="font-display text-lg font-semibold text-stone-900">Assignment</h2>
+          <p className="mt-1 text-[14px] leading-relaxed text-stone-600">
+            Who should own this? Optional — leave unassigned if it is still up in the air.
           </p>
-        )}
+
+          <div className="mt-4">
+            {canPickAssignee && (
+              <Select
+                label="Assign to"
+                value={assignedToId}
+                onChange={(e) => setAssignedToId(e.target.value)}
+              >
+                <option value="">Nobody yet</option>
+                {assignees.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.email}
+                  </option>
+                ))}
+              </Select>
+            )}
+
+            {isAdmin && assignees.length === 0 && (
+              <p className="rounded-lg border border-dashed border-stone-300/80 bg-white/60 px-3 py-2.5 text-sm text-stone-600">
+                Could not load the team list (check your connection or permissions). You can still save the task —
+                assignment stays empty until that works.
+              </p>
+            )}
+
+            {!isAdmin && (
+              <div className="rounded-lg border border-stone-200/90 bg-white/70 px-3 py-3 text-sm leading-relaxed text-stone-700">
+                <p>
+                  Picking someone from a list needs admin access on this app. Your task saves as usual; if you need it
+                  assigned, ask an admin to set the owner.
+                </p>
+                {isEdit && readOnlyAssigneeEmail && (
+                  <p className="mt-3 border-t border-stone-200/80 pt-3 text-stone-800">
+                    <span className="text-stone-500">Currently: </span>
+                    <span className="font-medium">{readOnlyAssigneeEmail}</span>
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
 
         {isEdit && existingAttachments.length > 0 && (
           <div>
-            <span className="mb-2 block text-sm font-medium text-slate-700">Attachments</span>
+            <span className="mb-2 block text-sm font-medium text-stone-700">Attachments</span>
             <AttachmentLinks paths={existingAttachments} />
           </div>
         )}
@@ -255,14 +298,14 @@ export function TaskEditorPage() {
           disabled={saving}
         />
 
-        <div className="flex flex-wrap gap-3 pt-2">
+        <div className="flex flex-wrap gap-3 border-t border-stone-200/60 pt-6">
           <Button type="submit" disabled={saving}>
             {saving ? (
               <>
                 <Spinner className="h-4 w-4" /> Saving…
               </>
             ) : (
-              'Save'
+              'Save task'
             )}
           </Button>
           <Link to="/">

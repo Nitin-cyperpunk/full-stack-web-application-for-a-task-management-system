@@ -16,21 +16,21 @@ const priorityLabel = {
 
 export function TaskRow({ task, onDelete, deleting }) {
   return (
-    <tr className="border-b border-slate-100 hover:bg-slate-50">
-      <td className="px-3 py-3 font-medium text-slate-900">{task.title}</td>
-      <td className="hidden px-3 py-3 text-sm text-slate-600 md:table-cell">
+    <tr className="border-b border-stone-100 transition-colors hover:bg-stone-50/80">
+      <td className="px-3 py-3.5 font-medium text-stone-900">{task.title}</td>
+      <td className="hidden px-3 py-3.5 text-sm text-stone-600 md:table-cell">
         {statusLabel[task.status] || task.status}
       </td>
-      <td className="hidden px-3 py-3 text-sm text-slate-600 sm:table-cell">
+      <td className="hidden px-3 py-3.5 text-sm text-stone-600 sm:table-cell">
         {priorityLabel[task.priority] || task.priority}
       </td>
-      <td className="hidden px-3 py-3 text-sm text-slate-600 lg:table-cell">
+      <td className="hidden px-3 py-3.5 text-sm text-stone-600 lg:table-cell">
         {formatDate(task.dueDate)}
       </td>
-      <td className="hidden px-3 py-3 text-sm text-slate-600 xl:table-cell">
+      <td className="hidden px-3 py-3.5 text-sm text-stone-600 xl:table-cell">
         {task.assignedTo?.email || '—'}
       </td>
-      <td className="px-3 py-3 text-right">
+      <td className="px-3 py-3.5 text-right">
         <div className="flex flex-wrap justify-end gap-2">
           <Link to={`/tasks/${task._id}/edit`}>
             <Button type="button" variant="ghost" className="!py-1.5 !text-sm">

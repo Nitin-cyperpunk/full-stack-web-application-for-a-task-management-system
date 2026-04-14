@@ -29,13 +29,13 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
-        <h1 className="text-center text-2xl font-semibold text-slate-900">Sign in</h1>
-        <p className="mt-2 text-center text-sm text-slate-600">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-14">
+      <div className="w-full max-w-md rounded-2xl border border-white/55 bg-white/65 p-8 shadow-glass-lg backdrop-blur-xl backdrop-saturate-150">
+        <h1 className="font-display text-center text-2xl font-semibold text-stone-900">Sign in</h1>
+        <p className="mt-2 text-center text-sm text-stone-600">
           No account?{' '}
-          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-800">
-            Register
+          <Link to="/register" className="font-medium text-sky-900 underline decoration-sky-300/80 underline-offset-2 hover:text-stone-900">
+            Create one
           </Link>
         </p>
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">

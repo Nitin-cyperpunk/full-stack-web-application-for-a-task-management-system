@@ -4,7 +4,7 @@ export function AttachmentLinks({ paths }) {
   if (!paths || paths.length === 0) return null;
 
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-2.5">
       {paths.map((p, i) => {
         const name = p.split('/').pop() || `file-${i + 1}.pdf`;
         const href = attachmentUrl(p);
@@ -14,11 +14,11 @@ export function AttachmentLinks({ paths }) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+              className="text-sm font-medium text-sky-800 underline decoration-sky-300/80 underline-offset-2 hover:text-sky-950"
             >
               {decodeURIComponent(name)}
             </a>
-            <span className="ml-2 text-xs text-slate-500">(open / download)</span>
+            <span className="ml-2 text-xs text-stone-500">open in browser</span>
           </li>
         );
       })}
