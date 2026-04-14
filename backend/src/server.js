@@ -26,7 +26,8 @@ async function start() {
 
   const app = require('./app');
 
-  const server = app.listen(port, () => {
+  const host = process.env.HOST || '0.0.0.0';
+  const server = app.listen(port, host, () => {
     if (nodeEnv !== 'test') {
       // eslint-disable-next-line no-console
       console.log(`Server listening on port ${port}`);
